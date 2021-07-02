@@ -37,10 +37,10 @@ Engine_Goldeneye : CroneEngine {
 					numChannels:2, 
 					bufnum:bufnum,
 					rate:BufRateScale.kr(bufnum)*rate,
-				 	startPos: ((sampleEnd*(rate<0))*frames)+(sampleStart*frames*(rate>0)),
-				 	trigger:t_trig,
-				 	loop:loop,
-				 	doneAction:2,
+					startPos: ((sampleEnd*(rate<0))*frames)+(sampleStart*frames*(rate>0)),
+					trigger:t_trig,
+					loop:loop,
+					doneAction:2,
 				);
 
 				// multiple by amp
@@ -62,16 +62,18 @@ Engine_Goldeneye : CroneEngine {
 
 				// lag the amp for doing fade in/out
 				amp = Lag.kr(amp,ampLag);
+				// use envelope for doing fade in
+				amp = amp * EnvGen.ar(Env([0,1],[ampLag]));
 				
 				// playbuf
 				snd = PlayBuf.ar(
 					numChannels:1, 
 					bufnum:bufnum,
 					rate:BufRateScale.kr(bufnum)*rate,
-				 	startPos: ((sampleEnd*(rate<0))*frames)+(sampleStart*frames*(rate>0)),
-				 	trigger:t_trig,
-				 	loop:loop,
-				 	doneAction:2,
+					startPos: ((sampleEnd*(rate<0))*frames)+(sampleStart*frames*(rate>0)),
+					trigger:t_trig,
+					loop:loop,
+					doneAction:2,
 				);
 
 				snd = Pan2.ar(snd,0);
@@ -107,15 +109,12 @@ Engine_Goldeneye : CroneEngine {
 						\rate,msg[7],
 						\t_trig,msg[8],
 					],target:context.server).onFree({
-	                    ("freed "++filename).postln;
-	                }));
+						("freed "++filename).postln;
+					}));
 					NodeWatcher.register(synGoldeneye.at(filename));
 				});
-				// if (mxsamplesVoiceAlloc.at(filename).isRunning==true,{
-				// 	("stealing "++name).postln;
-				// 	mxsamplesVoiceAlloc.at(filename).free;
-				// });
 			},{
+				// buffer already loaded, just play it
 				if (bufGoldeneye.at(filename).numChannels>1,{
 					synName="playerGoldeneyeStereo";
 				});
@@ -141,8 +140,8 @@ Engine_Goldeneye : CroneEngine {
 						\rate,msg[7],
 						\t_trig,msg[8],
 					],target:context.server).onFree({
-	                    ("freed "++filename).postln;
-	                }));
+						("freed "++filename).postln;
+					}));
 					NodeWatcher.register(synGoldeneye.at(filename));
 				});
 			});
@@ -153,8 +152,8 @@ Engine_Goldeneye : CroneEngine {
 
 	free {
 		// <Goldeneye> 
-    	synGoldeneye.keysValuesDo({ arg key, value; value.free; });
-    	bufGoldeneye.keysValuesDo({ arg key, value; value.free; });
+		synGoldeneye.keysValuesDo({ arg key, value; value.free; });
+		bufGoldeneye.keysValuesDo({ arg key, value; value.free; });
 		// </Goldeneye> 
 	}
 }
