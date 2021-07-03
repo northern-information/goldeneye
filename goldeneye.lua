@@ -1,58 +1,58 @@
--- goldeneye
-
-engine.name="Goldeneye"
+include("config")
+include("lib/Sample")
+_grid = include("lib/_grid")
+fn = include("lib/functions")
+filesystem = include("lib/filesystem")
+samples = include("lib/samples")
+graphics = include("lib/graphics")
 
 function init()
+  graphics.init()
+  _grid.init()
+  filesystem.init()
+  samples.init()
+  samples:select_x(1)
+  samples:select_y(1)
+  grid_clock_id = clock.run(_grid.grid_redraw_clock)
+  redraw_clock_id = clock.run(redraw_clock)
 end
 
-
-function playkick()
-  fname="/home/we/dust/audio/common/808/808-BD.wav"
-  amp=1
-  amp_lag=0
-  sample_start=0
-  sample_end=1
-  loop=0
-  rate=1
-  trig=1
-  engine.play(fname,amp,amp_lag,sample_start,sample_end,loop,rate,trig)
+function enc(e, d)
+  if e == 1 then
+    if _grid:is_long_press() then
+      local s = samples:get_selected()
+      s:set_volume(util.clamp(s:get_volume() + d, 0, 100))
+    end
+  elseif e == 2 then
+    samples:select_x(util.clamp(samples:get_selected_x() + d, 1, _grid.last_known_width))
+  elseif e == 3 then
+    samples:select_y(util.clamp(samples:get_selected_y() + d, 1, _grid.last_known_height))
+  end
+ fn.dirty_screen(true)
 end
 
-function fade_in_loop()
-  -- fade in and loop...
-  fname="/home/we/dust/audio/tehn/whirl1.aif"
-  amp=1
-  amp_lag=4 -- fade in time
-  sample_start=0
-  sample_end=1
-  loop=1
-  rate=2
-  trig=1
-  engine.play(fname,amp,amp_lag,sample_start,sample_end,loop,rate,trig)
+function key(k, z)
+  if z == 1 then return end
+  if k == 2 then
+    graphics:set_message("k2")
+  elseif k == 3 then
+    graphics:set_message("k3")
+  end
+  fn.dirty_screen(true)
 end
 
-function retrig_loop()
-  -- retrig
-  fname="/home/we/dust/audio/tehn/whirl1.aif"
-  amp=1
-  amp_lag=0
-  sample_start=0
-  sample_end=1
-  loop=1
-  rate=2
-  trig=1 -- just keep trig 1 and everything the same
-  engine.play(fname,amp,amp_lag,sample_start,sample_end,loop,rate,trig)
+function redraw_clock()
+  while true do
+    if fn.dirty_screen()then
+      redraw()
+      fn.dirty_screen(false)
+    end
+    clock.sleep(1 / graphics.fps)
+  end
 end
 
-function fade_out_loop()
-  -- fade out the same sample...
-  fname="/home/we/dust/audio/tehn/whirl1.aif"
-  amp=0 -- turn amp to 0
-  amp_lag=4 -- fade out time
-  sample_start=0
-  sample_end=1
-  loop=1
-  rate=2
-  trig=0 -- 0 trig means we won't reset the sample to the beginning
-  engine.play(fname,amp,amp_lag,sample_start,sample_end,loop,rate,trig)
+function redraw()
+  graphics:setup()
+  graphics:sample()
+  graphics:teardown()
 end
