@@ -3,6 +3,8 @@ samples = {}
 function samples.init()
   samples.id_prefix = "id"
   samples.id_counter = 0
+  samples.steps = 16
+  samples.step = 0
   samples.selected = 1
   samples.selected_x = 1
   samples.selected_y = 1
@@ -13,6 +15,40 @@ function samples.init()
       samples.all[s.index] = s
     end
   end
+end
+
+function samples:play()
+  self:increment_step()
+  for k, s in pairs(self:get_all()) do
+    if self:get_step() % s:get_speed() == 0 then
+      s:increment_pointer()
+      if s:is_playing() and s:get_er()[s:get_pointer()] then
+        s:trigger()
+      end
+    end
+  end
+end
+
+function samples:irradiate()
+  for k, s in pairs(self:get_all()) do
+    s:irradiate()
+  end
+end
+
+function samples:set_steps(i)
+  self.steps = i
+end
+
+function samples:get_steps()
+  return self.steps
+end
+
+function samples:get_step()
+  return self.step
+end
+
+function samples:increment_step()
+  self.step = util.wrap(self.step + 1, 1, self:get_steps())
 end
 
 function samples:get_selected()

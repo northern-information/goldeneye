@@ -109,7 +109,7 @@ Engine_Goldeneye : CroneEngine {
 						\rate,msg[7],
 						\t_trig,msg[8],
 					],target:context.server).onFree({
-						("freed "++filename).postln;
+						// ("freed "++filename).postln;
 					}));
 					NodeWatcher.register(synGoldeneye.at(filename));
 				});
@@ -140,7 +140,7 @@ Engine_Goldeneye : CroneEngine {
 						\rate,msg[7],
 						\t_trig,msg[8],
 					],target:context.server).onFree({
-						("freed "++filename).postln;
+						// ("freed "++filename).postln;
 					}));
 					NodeWatcher.register(synGoldeneye.at(filename));
 				});

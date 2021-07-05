@@ -1,5 +1,8 @@
-include("config")
+engine.name = "Goldeneye"
+lattice = require("lattice")
+er = require("er")
 include("lib/Sample")
+config = include("lib/config")
 _grid = include("lib/_grid")
 fn = include("lib/functions")
 filesystem = include("lib/filesystem")
@@ -13,7 +16,15 @@ function init()
   samples.init()
   samples:select_x(1)
   samples:select_y(1)
+  golden_lattice = lattice:new()
+  p = golden_lattice:new_pattern{
+    action = function(t) samples:play() end,
+    division = 1/16,
+    enabled = true
+  }
+  golden_lattice:start()
   grid_clock_id = clock.run(_grid.grid_redraw_clock)
+  frame_clock_id = clock.run(graphics.frame_clock)
   redraw_clock_id = clock.run(redraw_clock)
 end
 
@@ -34,9 +45,13 @@ end
 function key(k, z)
   if z == 1 then return end
   if k == 2 then
-    graphics:set_message("k2")
+    l:toggle()
   elseif k == 3 then
-    graphics:set_message("k3")
+    if _grid:is_long_press() then
+      samples:get_selected():irradiate()
+    else
+      samples:irradiate()
+    end
   end
   fn.dirty_screen(true)
 end
@@ -52,7 +67,5 @@ function redraw_clock()
 end
 
 function redraw()
-  graphics:setup()
-  graphics:sample()
-  graphics:teardown()
+  graphics:render()
 end

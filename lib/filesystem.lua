@@ -15,13 +15,19 @@ function filesystem.init()
   filesystem:scan()
 end
 
+function filesystem:get_sample_path()
+  return self.paths.sample_path
+end
+
 function filesystem:get_sample_name(index)
   return self.samples[index]
 end
 
 function filesystem:install_factory_samples()
   for k, sample in pairs(self:scandir(self.paths.factory_install)) do
-    util.os_capture("cp" .. " " .. self.paths.factory_install .. sample .. " " .. self.paths.factory_destination)
+    if util.file_exists(self.paths.factory_destination .. sample) == false then
+      util.os_capture("cp" .. " " .. self.paths.factory_install .. sample .. " " .. self.paths.factory_destination)
+    end
   end
 end
 
