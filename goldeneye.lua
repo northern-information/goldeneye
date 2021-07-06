@@ -45,6 +45,14 @@ function enc(e, d)
   if e == 1 then
     if _grid:is_long_press() then  
       s:set_volume(util.clamp(s:get_volume() + d, 0, 100))
+    else
+      if d > 0 then
+        samples:toggle_random()
+      elseif d < 0 then
+        samples:untoggle_last()
+      end
+      fn.dirty_grid(true)  
+      fn.dirty_screen(true)
     end
   elseif e == 2 then
     if _grid:is_long_press() then
