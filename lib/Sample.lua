@@ -22,7 +22,7 @@ function Sample:new(x, y)
     s.live = true
   end
   s.playing = false
-  s.volume = 100
+  s.volume = config.volume["row" .. s.y]
   return s
 end
 
@@ -34,16 +34,15 @@ function Sample:trigger()
   _grid:register_flicker_at(self:get_x(), self:get_y())
   local path = filesystem:get_sample_path() .. "/" .. self:get_name()
   local amp = 1
-  -- uncomment once amp can be between 0 and 1
-  -- local variation = config.volume["row" .. self:get_y()]
-  -- if variation > 0 then 
-  --   local is_louder = math.random(0, 1)
-  --   if is_louder == 0 then
-  --     is_louder = -1
-  --   end
-  --   local value = math.random(0, variation)
-  --   amp = util.clamp(self:get_volume() + (value * is_louder), 0, 100) * .01
-  -- end
+  local variation = config.volume_variation["row" .. self:get_y()]
+  if variation > 0 then 
+    local is_louder = math.random(0, 1)
+    if is_louder == 0 then
+      is_louder = -1
+    end
+    local value = math.random(0, variation)
+    amp = util.clamp(self:get_volume() + (value * is_louder), 0, 100) * .01
+  end
   local amp_lag = 0
   local sample_start = 0
   local sample_end = 1
@@ -59,6 +58,10 @@ function Sample:irradiate()
   self:set_density(math.random(config.min_density[row], config.max_density[row]))
   self:set_length(math.random(config.min_length[row], config.max_length[row]))
   self:set_offset(math.random(config.min_offset[row], config.max_offset[row]))
+  self:set_er()
+end
+
+function Sample:set_er()
   self.er = er.gen(self:get_density(), self:get_length(), self:get_offset())
 end
 
@@ -79,7 +82,7 @@ function Sample:get_er()
 end
 
 function Sample:set_offset(i)
-  self.offset = util.clamp(i, 0, 15)
+  self.offset = i
 end
 
 function Sample:get_offset()
@@ -87,7 +90,8 @@ function Sample:get_offset()
 end
 
 function Sample:set_length(i)
-  self.length = util.clamp(i, 1, 16)  -- not magic numbers
+  self.length = i
+  self:set_er()
 end
 
 function Sample:get_length()
@@ -95,7 +99,8 @@ function Sample:get_length()
 end
 
 function Sample:set_density(i)
-  self.density = util.clamp(i, 1, 16)  -- not magic numbers
+  self.density = i
+  self:set_er()
 end
 
 function Sample:get_density()

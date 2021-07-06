@@ -8,29 +8,62 @@ function graphics.init()
   graphics.stars = {}
   graphics.stars_count = 16
   graphics.horizon = 46
+  graphics.analysis_pixels = {}
+  graphics.splash_lines_open = {}
+  graphics.splash_lines_close = {}
+  graphics.splash_lines_close_available = {}
+  for i=1,45 do graphics.splash_lines_open[i] = i end
+  for i=1,64 do graphics.splash_lines_close_available[i] = i end
 end
 
 function graphics:set_message(s)
   self.message = s
 end
 
-function graphics:sample()
-  local sample = samples:get_selected()
-  self:text_center(64, 40, sample:get_name())
-  local p = "NOT PLAYING"
-  if sample:is_playing() then p = "PLAYING" end
-  self:text_center(64, 50, p)
-  self:text_center(64, 60, "VOLUME: " .. sample:get_volume())
+function graphics:draw_numbers()
+  local s = samples:get_selected()
+  self:text_center(64, 21, "(" .. s:get_density() .. "," .. s:get_length() .. "," ..  s:get_offset() .. "," .. s:get_volume() .. ")", 5)
+  self:serif_font()
+  self:text_center(16, 21, s:get_x(), 5)
+  self:text_center(112, 21, s:get_y(), 5)
+  self:sans_serif_font()
 end
 
+function graphics:sequence()
+  local pointer = samples:get_selected():get_pointer()
+  local er = samples:get_selected():get_er()
+  local display = ""
+  local step = 1
+  for k, v in pairs(er) do
+    if pointer == step then
+      display = display .. "!"
+    elseif v then
+      display = display .. "x"
+    else
+      display = display .. "-"
+    end
+    step = step + 1
+  end
+  self:text_center(64, 30, display, 5)
+end
+
+function graphics:sample()
+  local sample = samples:get_selected()
+  self:text_center(64, 40, sample:get_name(), 5)
+end
 
 function graphics:render()
   self:setup()
-  self:draw_horizon()
-  self:draw_stars()
-  self:draw_stage()
-  self:draw_numbers()
-  self:sample()
+  if fn.break_splash() then
+    self:draw_horizon()
+    self:draw_stars()
+    self:draw_stage()
+    self:draw_numbers()
+    self:sample()
+    self:sequence()
+  else
+    self:splash()
+  end
   self:teardown()
 end
 
@@ -50,15 +83,6 @@ function graphics:draw_horizon()
   self:mls(94, h, 124, 64, l)
   self:mls(104, h, 144, 64, l)
   self:mls(114, h, 164, 64, l)
-end
-
-function graphics:draw_numbers()
-  local s = samples:get_selected()
-  self:text_center(64, 21, "(" .. s:get_density() .. "," .. s:get_length() .. "," ..  s:get_offset() .. ")", 5)
-  self:serif_font()
-  self:text_center(16, 21, s:get_x(), 5)
-  self:text_center(112, 21, s:get_y(), 5)
-  self:sans_serif_font()
 end
 
 function graphics:text_center(x, y, s, l)
@@ -227,6 +251,75 @@ function graphics.frame_clock()
     fn.dirty_screen(true)
     clock.sleep(1 / graphics.fps)
   end
+end
+
+function graphics:splash()
+  local col_x = 34
+  local row_x = 34
+  local y = 45
+  local l = self.frame_number >= 49 and 0 or 15
+  if self.frame_number >= 49 then
+    self:rect(0, 0, 128, 50, 15)
+  end
+  self:ni(col_x, row_x, y, l)
+  if #self.splash_lines_open > 1 then 
+    local delete = math.random(1, #self.splash_lines_open)
+    table.remove(self.splash_lines_open, delete)
+    for i = 1, #self.splash_lines_open do
+      self:mlrs(1, self.splash_lines_open[i] + 4, 128, 1, 0)
+    end
+  end
+  if self.frame_number >= 49 then
+    self:text_center(64, 60, "NORTHERN INFORMATION")
+  end
+  if self.frame_number > 100 then
+    if #self.splash_lines_close_available > 0 then 
+      local add = math.random(1, #self.splash_lines_close_available)
+      table.insert(self.splash_lines_close, self.splash_lines_close_available[add])
+      table.remove(self.splash_lines_close_available, add)
+    end
+    for i = 1, #self.splash_lines_close do
+      self:mlrs(1, self.splash_lines_close[i], 128, 1, 0)
+    end
+  end
+  if #self.splash_lines_close_available == 0 then
+    fn.break_splash(true)
+  end
+  fn.dirty_screen(true)
+end
+
+function graphics:ni(col_x, row_x, y, l)
+  self:n_col(col_x, y, l)
+  self:n_col(col_x+20, y, l)
+  self:n_col(col_x+40, y, l)
+  self:n_row_top(row_x, y, l)
+  self:n_row_top(row_x+20, y, l)
+  self:n_row_top(row_x+40, y, l)
+  self:n_row_bottom(row_x+9, y+37, l)
+  self:n_row_bottom(row_x+29, y+37, l)
+end
+
+function graphics:n_col(x, y, l)
+  self:mls(x, y, x+12, y-40, l)
+  self:mls(x+1, y, x+13, y-40, l)
+  self:mls(x+2, y, x+14, y-40, l)
+  self:mls(x+3, y, x+15, y-40, l)
+  self:mls(x+4, y, x+16, y-40, l)
+  self:mls(x+5, y, x+17, y-40, l)
+end
+
+function graphics:n_row_top(x, y, l)
+  self:mls(x+20, y-39, x+28, y-39, l)
+  self:mls(x+20, y-38, x+28, y-38, l)
+  self:mls(x+19, y-37, x+27, y-37, l)
+  self:mls(x+19, y-36, x+27, y-36, l)
+end
+
+function graphics:n_row_bottom(x, y, l)
+  self:mls(x+21, y-40, x+29, y-40, l)
+  self:mls(x+21, y-39, x+29, y-39, l)
+  self:mls(x+20, y-38, x+28, y-38, l)
+  self:mls(x+20, y-37, x+28, y-37, l)
 end
 
 return graphics

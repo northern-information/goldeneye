@@ -88,7 +88,7 @@ Engine_Goldeneye : CroneEngine {
 		}).add;	
 
 
-		this.addCommand("play","siffffff", { arg msg;
+		this.addCommand("play","sfffffff", { arg msg;
 			var filename=msg[1];
 			var synName="playerGoldeneyeMono";
 			if (bufGoldeneye.at(filename)==nil,{

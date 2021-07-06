@@ -19,6 +19,7 @@ end
 
 function g.key(x, y, z)
   graphics:set_message(x, y, z)
+  fn.break_splash(true)
   fn.dirty_screen(true)
   if z == 1 then
     _grid.counter[x][y] = clock.run(_grid.grid_long_press, g, x, y)

@@ -17,6 +17,12 @@ function r()
   rerun()
 end
 
+function fn.break_splash(bool)
+  if bool == nil then return splash_break end
+  splash_break = bool
+  return splash_break
+end
+
 function fn.dirty_grid(bool)
   if bool == nil then return grid_dirty end
   grid_dirty = bool
