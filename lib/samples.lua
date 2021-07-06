@@ -76,8 +76,8 @@ function samples:toggle_random()
   -- try to find a empty slot
   -- yes this is lazy...
   for i=1,100 do
-    local x = math.random(1,16)
-    local y = math.random(1,8)
+    local x = math.random(1, _grid:get_width())
+    local y = math.random(1, _grid:get_height())
     if not self:is_toggled(x,y) then
       self:toggle(x,y)
       break

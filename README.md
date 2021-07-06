@@ -19,7 +19,7 @@ Ships with 128 artisinal factory samples harvested from [CIPHER SUITE](https://s
 
 ## Controls
 
- - e1: Does nothing.
+ - e1: Randomly toggle samples.
  - e2: Scan X.
  - e3: Scan Y.
  - k1: Exit.

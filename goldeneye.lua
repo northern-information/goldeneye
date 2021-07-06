@@ -52,19 +52,18 @@ function enc(e, d)
         samples:untoggle_last()
       end
       fn.dirty_grid(true)  
-      fn.dirty_screen(true)
     end
   elseif e == 2 then
     if _grid:is_long_press() then
       s:set_density(util.clamp(s:get_density() + d, config.min_density[row], config.max_density[row]))
     else
-      samples:select_x(util.clamp(samples:get_selected_x() + d, 1, _grid.last_known_width))
+      samples:select_x(util.clamp(samples:get_selected_x() + d, 1, _grid:get_width()))
     end
   elseif e == 3 then
     if _grid:is_long_press() then
       s:set_length(util.clamp(s:get_length() + d, config.min_length[row], config.max_length[row]))
     else
-      samples:select_y(util.clamp(samples:get_selected_y() + d, 1, _grid.last_known_height))
+      samples:select_y(util.clamp(samples:get_selected_y() + d, 1, _grid:get_height()))
     end
   end
  fn.dirty_screen(true)
