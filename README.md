@@ -13,7 +13,7 @@
 
 ## Breif
 
-On load, each sample gets irradiated and is mapped to the keys of grid. Press keys. Don't fiddle with the long presses too much, it isn't healthy. Don't think to much, it isn't healthy. Season to taste in `/we/dust/code/goldeneye/config.lua`.
+On load, each sample gets irradiated and is mapped to the keys of grid. Press keys. Don't fiddle with the long presses too much, it isn't healthy. Don't think to much, it isn't healthy. Season to taste in `/we/dust/code/goldeneye/config.lua`. Restart norns after installation.
 
 Ships with 128 artisinal factory samples harvested from [CIPHER SUITE](https://stuxnet.bandcamp.com/album/cipher-suite-demo) and [MATRYOSHKA](https://stuxnet.bandcamp.com/album/matryoshka-demo).
 
