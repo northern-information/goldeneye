@@ -109,6 +109,7 @@ end
 
 function Sample:toggle()
   self.playing = not self.playing
+  return self.playing
 end
 
 function Sample:play()

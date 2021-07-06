@@ -9,6 +9,7 @@ function samples.init()
   samples.selected_x = 1
   samples.selected_y = 1
   samples.all = {}
+  samples.toggled = {} -- running list of toggled samples (in order)
   for x = 1, _grid:get_width() do
     for y = 1, _grid:get_height() do
       local s = Sample:new(x, y)
@@ -71,9 +72,48 @@ function samples:get_all()
   return self.all
 end
 
+function samples:toggle_random()
+  -- try to find a empty slot
+  -- yes this is lazy...
+  for i=1,100 do
+    local x = math.random(1,16)
+    local y = math.random(1,8)
+    if not self:is_toggled(x,y) then
+      self:toggle(x,y)
+      break
+    end
+  end
+end
+
+function samples:untoggle_last()
+  -- pop last toggled and untoggle it
+  local v = table.remove(self.toggled)
+  if v ~= nil then
+    self:toggle(v.x,v.y)
+  end
+end
+
 function samples:toggle(x, y)
   local s = self:get(self:index(x, y))
-  s:toggle()
+  self:update_toggled(x,y,s:toggle())
+end
+
+function samples:is_toggled(x,y)
+  local s = self:get(self:index(x, y))
+  return s:is_playing()
+end
+
+function samples:update_toggled(x,y,on)
+  if on then 
+    table.insert(self.toggled,{x=x,y=y})
+  else
+    for i,v in ipairs(self.toggled) do
+      if v.x==x and v.y==y then
+        table.remove(self.toggled,i)
+        break
+      end
+    end
+  end
 end
 
 function samples:select_x(x)
