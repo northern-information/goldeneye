@@ -72,7 +72,11 @@ end
 function key(k, z)
   fn.break_splash(true)
   if z == 1 then return end
-  if k == 2 then
+  if k == 1 then 
+    -- emulate grid toggle
+    local s = samples:get_selected()
+    _grid:short_press(s:get_x(),s:get_y())
+  elseif k == 2 then
     golden_lattice:toggle()
   elseif k == 3 then
     if _grid:is_long_press() then

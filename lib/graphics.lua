@@ -92,19 +92,21 @@ function graphics:text_center(x, y, s, l)
 end
 
 function graphics:draw_stage()
+  local s = samples:get_selected()
+  local l = s:is_playing() and 15 or 5
   -- roof
-  self:rect_mirror(0, 0, 64, 2, 15)
-  self:rect_mirror(0, 0, 50, 5, 15)
+  self:rect_mirror(0, 0, 64, 2, l)
+  self:rect_mirror(0, 0, 50, 5, l)
   -- columns
-  self:rect_mirror(0, 58, 16, 2, 15)
-  self:rect_mirror(0, 60, 24, 4, 15)
+  self:rect_mirror(0, 58, 16, 2, l)
+  self:rect_mirror(0, 60, 24, 4, l)
   self:rect_mirror(2, 0, 2, 58, 4)
   self:rect_mirror(6, 0, 2, 58, 10)
   -- left cirlce
-  self:circle(16, 16, 16, 15)
+  self:circle(16, 16, 16, l)
   self:circle(16, 16, 13, 0)  
   -- right cirlce
-  self:circle(112, 16, 16, 15)
+  self:circle(112, 16, 16, l)
   self:circle(112, 16, 13, 0)
   -- bubbles
   self:bubble_mirror(35, 8, 7, 3)

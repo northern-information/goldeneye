@@ -43,8 +43,8 @@ Engine_Goldeneye : CroneEngine {
 					doneAction:2,
 				);
 
-				// multiple by amp
-				snd = snd * amp;
+				// multiple by amp and attenuate
+				snd = snd * amp / 20 ;
 
 				// if looping, free up synth if no output
 				DetectSilence.ar(snd,doneAction:2);
@@ -78,8 +78,8 @@ Engine_Goldeneye : CroneEngine {
 
 				snd = Pan2.ar(snd,0);
 
-				// multiple by amp
-				snd = snd * amp;
+				// multiple by amp and attenuate
+				snd = snd * amp / 20;
 
 				// if looping, free up synth if no output
 				DetectSilence.ar(snd,doneAction:2);
