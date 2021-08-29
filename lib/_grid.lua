@@ -8,6 +8,13 @@ function _grid.init()
   _grid.frame = 0
   _grid.last_known_width = g.cols
   _grid.last_known_height = g.rows
+  -- fake grid
+  if _grid.last_known_width == 0 then
+    _grid.last_known_width = 16
+  end
+  if _grid.last_known_height == 0 then 
+    _grid.last_known_height = 8
+  end
   for x = 1, _grid.last_known_width do
     _grid.counter[x] = {}
     for y = 1, _grid.last_known_height do
