@@ -27,7 +27,7 @@ function init()
   samples:select_x(1)
   samples:select_y(1)
   golden_lattice = lattice:new()
-  p = golden_lattice:new_pattern{
+  p = golden_lattice:new_sprocket{
     action = function(t) samples:play() end,
     division = 1/16,
     enabled = true
