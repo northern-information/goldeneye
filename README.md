@@ -11,7 +11,7 @@
 ....................................,,,....................,,,,,,
 ```
 
-## Breif
+## Brief
 
 On load, each sample gets irradiated and is mapped to the keys of grid. Press keys. Don't fiddle with the long presses too much, it isn't healthy. Don't think to much, it isn't healthy. Season to taste in `/we/dust/code/goldeneye/config.lua`. Restart norns after installation.
 
